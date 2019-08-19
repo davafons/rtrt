@@ -1,12 +1,18 @@
 #include "viewport.cuh"
 
 Viewport::Viewport(SDL_Renderer *renderer, size_t w, size_t h,
-                   Uint32 pixel_format)
+                   Uint32 pixel_format_enum)
     : renderer_(renderer), width_(w), height_(h) {
   tex_ = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
                            SDL_TEXTUREACCESS_STREAMING, w, h);
 
-  fmt_ = SDL_AllocFormat(pixel_format);
+  cudaMallocManaged((void **)&fmt_, sizeof(SDL_PixelFormat));
+
+  SDL_PixelFormat *tmp_pixelformat = SDL_AllocFormat(pixel_format_enum);
+  cudaMemcpy(fmt_, tmp_pixelformat, sizeof(SDL_PixelFormat),
+             cudaMemcpyHostToDevice);
+
+  cudaMalloc((void **)&d_pixels_, width_ * height_ * sizeof(Uint32));
 }
 
 void Viewport::lock() {
@@ -14,13 +20,12 @@ void Viewport::lock() {
   locked_ = true;
 }
 
-/* void Viewport::lock_gpu() { */
-/*   lock(); */
-/*  */
-/*   cudaMalloc((void **)&d_pixels_, width_ * height_ * sizeof(Uint32)); */
-/*   cudaMemcpy(d_pixels_, pixels_, width_ * height_ * sizeof(Uint32), */
-/*              cudaMemcpyHostToDevice); */
-/* } */
+void Viewport::lock_gpu() {
+  lock();
+
+  cudaMemcpy(d_pixels_, pixels_, width_ * height_ * sizeof(Uint32),
+             cudaMemcpyHostToDevice);
+}
 
 void Viewport::unlock() {
   SDL_UnlockTexture(tex_);
@@ -29,16 +34,15 @@ void Viewport::unlock() {
   locked_ = false;
 }
 
-/* void Viewport::unlock_gpu() { */
-/*   cudaMemcpy(pixels_, d_pixels_, width_ * height_ * sizeof(Uint32), */
-/*              cudaMemcpyDeviceToHost); */
-/*   d_pixels_ = NULL; */
-/*  */
-/*   unlock(); */
-/* } */
+void Viewport::unlock_gpu() {
+  cudaMemcpy(pixels_, d_pixels_, width_ * height_ * sizeof(Uint32),
+             cudaMemcpyDeviceToHost);
+
+  unlock();
+}
 
 Uint32 &Viewport::access(int x, int y) {
-  return static_cast<Uint32 *>(pixels_)[y * width_ + x];
+  return static_cast<Uint32 *>(d_pixels_)[y * width_ + x];
 }
 
 void Viewport::set_rgb(int x, int y, Uint8 r, Uint8 g, Uint8 b) {

@@ -2,14 +2,14 @@
 #include <iostream>
 #include <thread>
 
-#include "/usr/include/SDL2/SDL.h"
+#include "SDL.h"
 
 #include "ray.cuh"
 #include "vec3.cuh"
 #include "viewport.cuh"
 
-const int WIDTH = 400;
-const int HEIGHT = 200;
+const int WIDTH = 800;
+const int HEIGHT = 600;
 
 bool cuda = true;
 
@@ -25,21 +25,23 @@ Vec3 origin(0.0, 0.0, 0.0);
 
 Uint32 *d_pixels = NULL;
 
-__host__ __device__ Vec3 color(const Ray &r) {
+__device__ Vec3 color(const Ray &r) {
   Vec3 unit_direction = unit_vector(r.direction());
   float t = 0.5f * (unit_direction.y() + 1.0f);
 
-  return (1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(1.0f, 0.7f, 0.5f);
+  return (1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(0.5f, 0.7f, 1.0f);
 }
 
-__global__ void compute_shader(Uint32 *pixels, int w, int h,
-                               Vec3 lower_left_corner, Vec3 horizontal,
-                               Vec3 vertical, Vec3 origin) {
+__global__ void compute_shader(Viewport *viewport, Vec3 lower_left_corner,
+                               Vec3 horizontal, Vec3 vertical, Vec3 origin) {
 
   int x = threadIdx.x + blockIdx.x * blockDim.x;
   int y = threadIdx.y + blockIdx.y * blockDim.y;
 
-  if ((x >= w) || (y >= h))
+  size_t w = viewport->get_width();
+  size_t h = viewport->get_height();
+
+  if ((x >= w || (y >= h)))
     return;
 
   float u = float(x) / float(w);
@@ -52,31 +54,18 @@ __global__ void compute_shader(Uint32 *pixels, int w, int h,
   Uint8 g = col.g() * 255.99;
   Uint8 b = col.b() * 255.99;
 
-  pixels[y * w + x] = b << 24 | g << 16 | r << 8 | 0xFF;
+  viewport->set_rgb(x, y, r, g, b);
 }
 
-void update_viewport(Viewport &viewport) {
-  int *a = new int(3);
-  int *b = new int(4);
+void update_viewport(Viewport *viewport) {
+  viewport->lock_gpu();
 
-  viewport.lock();
-  cudaMemcpy(d_pixels, viewport.get_pixels(),
-             sizeof(Uint32) * viewport.get_width() * viewport.get_height(),
-             cudaMemcpyHostToDevice);
-
-  compute_shader<<<blocks, threads>>>(d_pixels, viewport.get_width(),
-                                      viewport.get_height(), lower_left_corner,
-                                      horizontal, vertical, origin);
+  compute_shader<<<blocks, threads>>>(viewport, lower_left_corner, horizontal,
+                                      vertical, origin);
 
   cudaDeviceSynchronize();
 
-  Uint32 *pixels = (Uint32 *)malloc(sizeof(Uint32) * viewport.get_width() *
-                                    viewport.get_height());
-  cudaMemcpy(viewport.get_pixels(), d_pixels,
-             sizeof(Uint32) * viewport.get_width() * viewport.get_height(),
-             cudaMemcpyDeviceToHost);
-
-  viewport.unlock();
+  viewport->unlock_gpu();
 }
 
 int main() {
@@ -105,10 +94,13 @@ int main() {
 
   SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-  Viewport viewport = Viewport(renderer, WIDTH, HEIGHT);
+  Viewport *viewport_mem = nullptr;
+  cudaMallocManaged((void **)&viewport_mem, sizeof(Viewport));
+
+  Viewport *viewport = new (viewport_mem) Viewport(renderer, WIDTH, HEIGHT);
 
   cudaMalloc((void **)&d_pixels,
-             sizeof(Uint32) * viewport.get_width() * viewport.get_height());
+             sizeof(Uint32) * viewport->get_width() * viewport->get_height());
 
   bool quit = false;
   long int iteration = 0;
@@ -130,7 +122,7 @@ int main() {
     const auto before = std::chrono::system_clock::now();
 
     update_viewport(viewport);
-    viewport.render();
+    viewport->render();
 
     const std::chrono::duration<double> duration =
         std::chrono::system_clock::now() - before;
