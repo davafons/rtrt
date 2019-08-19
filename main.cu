@@ -23,6 +23,8 @@ Vec3 horizontal(4.0, 0.0, 0.0);
 Vec3 vertical(0.0, 2.0, 0.0);
 Vec3 origin(0.0, 0.0, 0.0);
 
+Uint32 *d_pixels = NULL;
+
 __host__ __device__ Vec3 color(const Ray &r) {
   Vec3 unit_direction = unit_vector(r.direction());
   float t = 0.5f * (unit_direction.y() + 1.0f);
@@ -51,74 +53,33 @@ __global__ void compute_shader(Uint32 *pixels, int w, int h,
   Uint8 b = col.b() * 255.99;
 
   pixels[y * w + x] = b << 24 | g << 16 | r << 8 | 0xFF;
-
-  /* viewport->set_rgba(x, y, Uint8(col.b() * 255.99), Uint8(col.g() *
-   * 255.99), */
-  /*                    Uint8(col.r() * 255.99), 0xFF); */
 }
 
 void update_viewport(Viewport &viewport) {
-  if (cuda) {
+  int *a = new int(3);
+  int *b = new int(4);
 
-    int *a = new int(3);
-    int *b = new int(4);
+  viewport.lock();
+  cudaMemcpy(d_pixels, viewport.get_pixels(),
+             sizeof(Uint32) * viewport.get_width() * viewport.get_height(),
+             cudaMemcpyHostToDevice);
 
-    viewport.lock();
+  compute_shader<<<blocks, threads>>>(d_pixels, viewport.get_width(),
+                                      viewport.get_height(), lower_left_corner,
+                                      horizontal, vertical, origin);
 
-    Uint32 *d_pixels = NULL;
-    cudaMalloc((void **)&d_pixels,
-               sizeof(Uint32) * viewport.get_width() * viewport.get_height());
-    cudaMemcpy(d_pixels, viewport.get_pixels(),
-               sizeof(Uint32) * viewport.get_width() * viewport.get_height(),
-               cudaMemcpyHostToDevice);
+  cudaDeviceSynchronize();
 
-    compute_shader<<<blocks, threads>>>(
-        d_pixels, viewport.get_width(), viewport.get_height(),
-        lower_left_corner, horizontal, vertical, origin);
+  Uint32 *pixels = (Uint32 *)malloc(sizeof(Uint32) * viewport.get_width() *
+                                    viewport.get_height());
+  cudaMemcpy(viewport.get_pixels(), d_pixels,
+             sizeof(Uint32) * viewport.get_width() * viewport.get_height(),
+             cudaMemcpyDeviceToHost);
 
-    cudaDeviceSynchronize();
-
-    Uint32 *pixels = (Uint32 *)malloc(sizeof(Uint32) * viewport.get_width() *
-                                      viewport.get_height());
-    cudaMemcpy(pixels, d_pixels,
-               sizeof(Uint32) * viewport.get_width() * viewport.get_height(),
-               cudaMemcpyDeviceToHost);
-
-    memcpy(viewport.get_pixels(), pixels,
-           sizeof(Uint32) * viewport.get_width() * viewport.get_height());
-
-    for (int i = 0; i < 400 * 200; ++i) {
-      /* std::cout << std::hex << viewport.get_pixels()[i] << std::endl; */
-    }
-
-    viewport.unlock();
-  } else {
-    /*  */
-    /* viewport->lock(); */
-    /*  */
-    /* for (int y = 0; y < viewport->get_height(); ++y) { */
-    /*   for (int x = 0; x < viewport->get_width(); ++x) { */
-    /*  */
-    /*     float u = float(x) / float(viewport->get_width()); */
-    /*     float v = */
-    /*         float(viewport->get_height() - y) /
-     * float(viewport->get_height()); */
-    /*  */
-    /*     Ray r(origin, lower_left_corner + u * horizontal + v * vertical); */
-    /*     Vec3 col = color(r); */
-    /*  */
-    /*     viewport->set_rgb(x, y, Uint8(col.b() * 255.99), */
-    /*                       Uint8(col.g() * 255.99), Uint8(col.r() * 255.99));
-     */
-    /*   } */
-    /* } */
-    /*  */
-    /* viewport->unlock(); */
-  }
+  viewport.unlock();
 }
 
 int main() {
-
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     throw std::runtime_error(SDL_GetError());
   }
@@ -146,7 +107,11 @@ int main() {
 
   Viewport viewport = Viewport(renderer, WIDTH, HEIGHT);
 
+  cudaMalloc((void **)&d_pixels,
+             sizeof(Uint32) * viewport.get_width() * viewport.get_height());
+
   bool quit = false;
+  long int iteration = 0;
   while (!quit) {
 
     SDL_Event e;
@@ -170,7 +135,11 @@ int main() {
     const std::chrono::duration<double> duration =
         std::chrono::system_clock::now() - before;
 
-    std::cout << (1000 / duration.count()) / 1000 << std::endl;
+    ++iteration;
+
+    if (iteration % 200 == 0) {
+      std::cout << (1000 / duration.count()) / 1000 << std::endl;
+    }
 
     SDL_RenderPresent(renderer);
   }
