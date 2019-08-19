@@ -123,59 +123,59 @@ rtrt/fast:
 	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/build
 .PHONY : rtrt/fast
 
-main.o: main.cpp.o
+main.o: main.cu.o
 
 .PHONY : main.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cpp.o
-.PHONY : main.cpp.o
+main.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.o
+.PHONY : main.cu.o
 
-main.i: main.cpp.i
+main.i: main.cu.i
 
 .PHONY : main.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cpp.i
-.PHONY : main.cpp.i
+main.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.i
+.PHONY : main.cu.i
 
-main.s: main.cpp.s
+main.s: main.cu.s
 
 .PHONY : main.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cpp.s
-.PHONY : main.cpp.s
+main.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.s
+.PHONY : main.cu.s
 
-viewport.o: viewport.cpp.o
+viewport.o: viewport.cu.o
 
 .PHONY : viewport.o
 
 # target to build an object file
-viewport.cpp.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cpp.o
-.PHONY : viewport.cpp.o
+viewport.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.o
+.PHONY : viewport.cu.o
 
-viewport.i: viewport.cpp.i
+viewport.i: viewport.cu.i
 
 .PHONY : viewport.i
 
 # target to preprocess a source file
-viewport.cpp.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cpp.i
-.PHONY : viewport.cpp.i
+viewport.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.i
+.PHONY : viewport.cu.i
 
-viewport.s: viewport.cpp.s
+viewport.s: viewport.cu.s
 
 .PHONY : viewport.s
 
 # target to generate assembly for a file
-viewport.cpp.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cpp.s
-.PHONY : viewport.cpp.s
+viewport.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.s
+.PHONY : viewport.cu.s
 
 # Help Target
 help:

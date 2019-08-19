@@ -4,11 +4,13 @@ cmake/
 CMakeCache.txt
 cmake_install.cmake
 compile_commands.json
+Makefile
 
 # vim
 *.plist
 *.swp
 *~
+tags
 
 # Output
 rtrt
