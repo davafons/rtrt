@@ -123,59 +123,72 @@ rtrt/fast:
 	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/build
 .PHONY : rtrt/fast
 
-main.o: main.cu.o
+#=============================================================================
+# Target rules for targets named glad
 
-.PHONY : main.o
+# Build rule for target.
+glad: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 glad
+.PHONY : glad
 
-# target to build an object file
-main.cu.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.o
-.PHONY : main.cu.o
+# fast build rule for target.
+glad/fast:
+	$(MAKE) -f CMakeFiles/glad.dir/build.make CMakeFiles/glad.dir/build
+.PHONY : glad/fast
 
-main.i: main.cu.i
+src/main.o: src/main.cu.o
 
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cu.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.i
-.PHONY : main.cu.i
-
-main.s: main.cu.s
-
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cu.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.s
-.PHONY : main.cu.s
-
-viewport.o: viewport.cu.o
-
-.PHONY : viewport.o
+.PHONY : src/main.o
 
 # target to build an object file
-viewport.cu.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.o
-.PHONY : viewport.cu.o
+src/main.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/main.cu.o
+.PHONY : src/main.cu.o
 
-viewport.i: viewport.cu.i
+src/main.i: src/main.cu.i
 
-.PHONY : viewport.i
+.PHONY : src/main.i
 
 # target to preprocess a source file
-viewport.cu.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.i
-.PHONY : viewport.cu.i
+src/main.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/main.cu.i
+.PHONY : src/main.cu.i
 
-viewport.s: viewport.cu.s
+src/main.s: src/main.cu.s
 
-.PHONY : viewport.s
+.PHONY : src/main.s
 
 # target to generate assembly for a file
-viewport.cu.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.s
-.PHONY : viewport.cu.s
+src/main.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/main.cu.s
+.PHONY : src/main.cu.s
+
+thirdparty/glad/src/glad.o: thirdparty/glad/src/glad.c.o
+
+.PHONY : thirdparty/glad/src/glad.o
+
+# target to build an object file
+thirdparty/glad/src/glad.c.o:
+	$(MAKE) -f CMakeFiles/glad.dir/build.make CMakeFiles/glad.dir/thirdparty/glad/src/glad.c.o
+.PHONY : thirdparty/glad/src/glad.c.o
+
+thirdparty/glad/src/glad.i: thirdparty/glad/src/glad.c.i
+
+.PHONY : thirdparty/glad/src/glad.i
+
+# target to preprocess a source file
+thirdparty/glad/src/glad.c.i:
+	$(MAKE) -f CMakeFiles/glad.dir/build.make CMakeFiles/glad.dir/thirdparty/glad/src/glad.c.i
+.PHONY : thirdparty/glad/src/glad.c.i
+
+thirdparty/glad/src/glad.s: thirdparty/glad/src/glad.c.s
+
+.PHONY : thirdparty/glad/src/glad.s
+
+# target to generate assembly for a file
+thirdparty/glad/src/glad.c.s:
+	$(MAKE) -f CMakeFiles/glad.dir/build.make CMakeFiles/glad.dir/thirdparty/glad/src/glad.c.s
+.PHONY : thirdparty/glad/src/glad.c.s
 
 # Help Target
 help:
@@ -186,12 +199,13 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... rtrt"
 	@echo "... edit_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... viewport.o"
-	@echo "... viewport.i"
-	@echo "... viewport.s"
+	@echo "... glad"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
+	@echo "... thirdparty/glad/src/glad.o"
+	@echo "... thirdparty/glad/src/glad.i"
+	@echo "... thirdparty/glad/src/glad.s"
 .PHONY : help
 
 
