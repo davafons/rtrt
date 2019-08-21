@@ -6,7 +6,7 @@
 #include "math/vec3.cuh"
 #include "utils/world.cuh"
 
-__global__ void chapter_3_kernel(TextureGPU *tex, World world) {
+__global__ void chapter_4_kernel(TextureGPU *tex, World world) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
   int y = threadIdx.y + blockIdx.y * blockDim.y;
 
@@ -17,6 +17,7 @@ __global__ void chapter_3_kernel(TextureGPU *tex, World world) {
     return;
 
   float u = float(x) / float(w);
+  u = float(x) / float(w);
   float v = float(h - y) / float(h);
 
   Ray ray(world.origin,

@@ -30,7 +30,7 @@ int main() {
   Config gConfig;
 
   {
-    Window window("Raytracer", 800, 600);
+    Window window("Raytracer", 800, 400);
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
         window.get_renderer(), window.get_width(), window.get_height(), 0.5f);
@@ -51,7 +51,8 @@ int main() {
 
       window.clear_render();
 
-      launch_2D_texture_kernel(chapter_3_kernel, gConfig, viewport.get(), gWorld);
+      launch_2D_texture_kernel(chapter_4_kernel, gConfig, viewport.get(),
+                               gWorld);
 
       viewport->copy_to_renderer(window.get_renderer());
 

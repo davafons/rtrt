@@ -177,6 +177,33 @@ src/frontend/window.cpp.s:
 	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/window.cpp.s
 .PHONY : src/frontend/window.cpp.s
 
+src/kernels/chapter_2_kernel.o: src/kernels/chapter_2_kernel.cu.o
+
+.PHONY : src/kernels/chapter_2_kernel.o
+
+# target to build an object file
+src/kernels/chapter_2_kernel.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_2_kernel.cu.o
+.PHONY : src/kernels/chapter_2_kernel.cu.o
+
+src/kernels/chapter_2_kernel.i: src/kernels/chapter_2_kernel.cu.i
+
+.PHONY : src/kernels/chapter_2_kernel.i
+
+# target to preprocess a source file
+src/kernels/chapter_2_kernel.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_2_kernel.cu.i
+.PHONY : src/kernels/chapter_2_kernel.cu.i
+
+src/kernels/chapter_2_kernel.s: src/kernels/chapter_2_kernel.cu.s
+
+.PHONY : src/kernels/chapter_2_kernel.s
+
+# target to generate assembly for a file
+src/kernels/chapter_2_kernel.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_2_kernel.cu.s
+.PHONY : src/kernels/chapter_2_kernel.cu.s
+
 src/kernels/chapter_3_kernel.o: src/kernels/chapter_3_kernel.cu.o
 
 .PHONY : src/kernels/chapter_3_kernel.o
@@ -203,6 +230,60 @@ src/kernels/chapter_3_kernel.s: src/kernels/chapter_3_kernel.cu.s
 src/kernels/chapter_3_kernel.cu.s:
 	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_3_kernel.cu.s
 .PHONY : src/kernels/chapter_3_kernel.cu.s
+
+src/kernels/chapter_4_kernel.o: src/kernels/chapter_4_kernel.cu.o
+
+.PHONY : src/kernels/chapter_4_kernel.o
+
+# target to build an object file
+src/kernels/chapter_4_kernel.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_4_kernel.cu.o
+.PHONY : src/kernels/chapter_4_kernel.cu.o
+
+src/kernels/chapter_4_kernel.i: src/kernels/chapter_4_kernel.cu.i
+
+.PHONY : src/kernels/chapter_4_kernel.i
+
+# target to preprocess a source file
+src/kernels/chapter_4_kernel.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_4_kernel.cu.i
+.PHONY : src/kernels/chapter_4_kernel.cu.i
+
+src/kernels/chapter_4_kernel.s: src/kernels/chapter_4_kernel.cu.s
+
+.PHONY : src/kernels/chapter_4_kernel.s
+
+# target to generate assembly for a file
+src/kernels/chapter_4_kernel.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_4_kernel.cu.s
+.PHONY : src/kernels/chapter_4_kernel.cu.s
+
+src/kernels/extra.o: src/kernels/extra.cu.o
+
+.PHONY : src/kernels/extra.o
+
+# target to build an object file
+src/kernels/extra.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/extra.cu.o
+.PHONY : src/kernels/extra.cu.o
+
+src/kernels/extra.i: src/kernels/extra.cu.i
+
+.PHONY : src/kernels/extra.i
+
+# target to preprocess a source file
+src/kernels/extra.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/extra.cu.i
+.PHONY : src/kernels/extra.cu.i
+
+src/kernels/extra.s: src/kernels/extra.cu.s
+
+.PHONY : src/kernels/extra.s
+
+# target to generate assembly for a file
+src/kernels/extra.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/extra.cu.s
+.PHONY : src/kernels/extra.cu.s
 
 src/main.o: src/main.cu.o
 
@@ -246,9 +327,18 @@ help:
 	@echo "... src/frontend/window.o"
 	@echo "... src/frontend/window.i"
 	@echo "... src/frontend/window.s"
+	@echo "... src/kernels/chapter_2_kernel.o"
+	@echo "... src/kernels/chapter_2_kernel.i"
+	@echo "... src/kernels/chapter_2_kernel.s"
 	@echo "... src/kernels/chapter_3_kernel.o"
 	@echo "... src/kernels/chapter_3_kernel.i"
 	@echo "... src/kernels/chapter_3_kernel.s"
+	@echo "... src/kernels/chapter_4_kernel.o"
+	@echo "... src/kernels/chapter_4_kernel.i"
+	@echo "... src/kernels/chapter_4_kernel.s"
+	@echo "... src/kernels/extra.o"
+	@echo "... src/kernels/extra.i"
+	@echo "... src/kernels/extra.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
