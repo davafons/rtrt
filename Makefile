@@ -150,32 +150,59 @@ main.cu.s:
 	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.s
 .PHONY : main.cu.s
 
-viewport.o: viewport.cu.o
+texturegpu.o: texturegpu.cu.o
 
-.PHONY : viewport.o
+.PHONY : texturegpu.o
 
 # target to build an object file
-viewport.cu.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.o
-.PHONY : viewport.cu.o
+texturegpu.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/texturegpu.cu.o
+.PHONY : texturegpu.cu.o
 
-viewport.i: viewport.cu.i
+texturegpu.i: texturegpu.cu.i
 
-.PHONY : viewport.i
+.PHONY : texturegpu.i
 
 # target to preprocess a source file
-viewport.cu.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.i
-.PHONY : viewport.cu.i
+texturegpu.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/texturegpu.cu.i
+.PHONY : texturegpu.cu.i
 
-viewport.s: viewport.cu.s
+texturegpu.s: texturegpu.cu.s
 
-.PHONY : viewport.s
+.PHONY : texturegpu.s
 
 # target to generate assembly for a file
-viewport.cu.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/viewport.cu.s
-.PHONY : viewport.cu.s
+texturegpu.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/texturegpu.cu.s
+.PHONY : texturegpu.cu.s
+
+window.o: window.cpp.o
+
+.PHONY : window.o
+
+# target to build an object file
+window.cpp.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/window.cpp.o
+.PHONY : window.cpp.o
+
+window.i: window.cpp.i
+
+.PHONY : window.i
+
+# target to preprocess a source file
+window.cpp.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/window.cpp.i
+.PHONY : window.cpp.i
+
+window.s: window.cpp.s
+
+.PHONY : window.s
+
+# target to generate assembly for a file
+window.cpp.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/window.cpp.s
+.PHONY : window.cpp.s
 
 # Help Target
 help:
@@ -189,9 +216,12 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... viewport.o"
-	@echo "... viewport.i"
-	@echo "... viewport.s"
+	@echo "... texturegpu.o"
+	@echo "... texturegpu.i"
+	@echo "... texturegpu.s"
+	@echo "... window.o"
+	@echo "... window.i"
+	@echo "... window.s"
 .PHONY : help
 
 
