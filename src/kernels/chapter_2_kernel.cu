@@ -1,9 +1,9 @@
 #include "kernels.cuh"
 
 #include "frontend/texturegpu.cuh"
-#include "utils/world.cuh"
+#include "math/vec3.cuh"
 
-__global__ void chapter_2_kernel(TextureGPU *tex, World world) {
+__global__ void chapter_2_kernel(TextureGPU *tex) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
   int y = threadIdx.y + blockIdx.y * blockDim.y;
 

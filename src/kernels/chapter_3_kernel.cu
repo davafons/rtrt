@@ -1,10 +1,16 @@
-#include "extra.cuh"
 #include "kernels.cuh"
 
 #include "frontend/texturegpu.cuh"
 #include "math/ray.cuh"
 #include "math/vec3.cuh"
 #include "utils/world.cuh"
+
+__device__ Vec3 color_3(const Ray &r) {
+  Vec3 unit_direction = unit_vector(r.direction());
+  float t = 0.5f * (unit_direction.y() + 1.0f);
+
+  return (1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(0.5f, 0.7f, 1.0f);
+}
 
 __global__ void chapter_3_kernel(TextureGPU *tex, World world) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
@@ -21,7 +27,7 @@ __global__ void chapter_3_kernel(TextureGPU *tex, World world) {
 
   Ray ray(world.origin,
           world.lower_left_corner + u * world.horizontal + v * world.vertical);
-  Vec3 col = color(ray);
+  Vec3 col = color_3(ray);
 
   Uint8 r = col.r() * 255.99;
   Uint8 g = col.g() * 255.99;
