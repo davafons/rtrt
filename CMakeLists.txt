@@ -12,7 +12,8 @@ find_package(CUDA REQUIRED)
 find_package(SDL2 REQUIRED)
 
 
-add_executable(${PROJECT_NAME} src/main.cu src/frontend/window.cpp src/kernels/sky.cu
+add_executable(${PROJECT_NAME} src/main.cu src/frontend/window.cpp
+  src/kernels/chapter_3_kernel.cu
   src/frontend/texturegpu.cu)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS}

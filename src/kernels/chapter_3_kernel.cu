@@ -13,7 +13,7 @@ __device__ Vec3 color(const Ray &r) {
   return (1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(0.5f, 0.7f, 1.0f);
 }
 
-__global__ void sky(TextureGPU *tex, World world) {
+__global__ void chapter_3_kernel(TextureGPU *tex, World world) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
   int y = threadIdx.y + blockIdx.y * blockDim.y;
 

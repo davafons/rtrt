@@ -177,32 +177,32 @@ src/frontend/window.cpp.s:
 	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/window.cpp.s
 .PHONY : src/frontend/window.cpp.s
 
-src/kernels/sky.o: src/kernels/sky.cu.o
+src/kernels/chapter_3_kernel.o: src/kernels/chapter_3_kernel.cu.o
 
-.PHONY : src/kernels/sky.o
+.PHONY : src/kernels/chapter_3_kernel.o
 
 # target to build an object file
-src/kernels/sky.cu.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/sky.cu.o
-.PHONY : src/kernels/sky.cu.o
+src/kernels/chapter_3_kernel.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_3_kernel.cu.o
+.PHONY : src/kernels/chapter_3_kernel.cu.o
 
-src/kernels/sky.i: src/kernels/sky.cu.i
+src/kernels/chapter_3_kernel.i: src/kernels/chapter_3_kernel.cu.i
 
-.PHONY : src/kernels/sky.i
+.PHONY : src/kernels/chapter_3_kernel.i
 
 # target to preprocess a source file
-src/kernels/sky.cu.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/sky.cu.i
-.PHONY : src/kernels/sky.cu.i
+src/kernels/chapter_3_kernel.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_3_kernel.cu.i
+.PHONY : src/kernels/chapter_3_kernel.cu.i
 
-src/kernels/sky.s: src/kernels/sky.cu.s
+src/kernels/chapter_3_kernel.s: src/kernels/chapter_3_kernel.cu.s
 
-.PHONY : src/kernels/sky.s
+.PHONY : src/kernels/chapter_3_kernel.s
 
 # target to generate assembly for a file
-src/kernels/sky.cu.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/sky.cu.s
-.PHONY : src/kernels/sky.cu.s
+src/kernels/chapter_3_kernel.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/chapter_3_kernel.cu.s
+.PHONY : src/kernels/chapter_3_kernel.cu.s
 
 src/main.o: src/main.cu.o
 
@@ -246,9 +246,9 @@ help:
 	@echo "... src/frontend/window.o"
 	@echo "... src/frontend/window.i"
 	@echo "... src/frontend/window.s"
-	@echo "... src/kernels/sky.o"
-	@echo "... src/kernels/sky.i"
-	@echo "... src/kernels/sky.s"
+	@echo "... src/kernels/chapter_3_kernel.o"
+	@echo "... src/kernels/chapter_3_kernel.i"
+	@echo "... src/kernels/chapter_3_kernel.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
