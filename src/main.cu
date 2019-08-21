@@ -51,7 +51,7 @@ int main() {
 
       window.clear_render();
 
-      launch_2D_texture_kernel(chapter_4_kernel, gConfig, viewport.get(),
+      launch_2D_texture_kernel(chapter_5_kernel, gConfig, viewport.get(),
                                gWorld);
 
       viewport->copy_to_renderer(window.get_renderer());
