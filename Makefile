@@ -123,86 +123,113 @@ rtrt/fast:
 	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/build
 .PHONY : rtrt/fast
 
-main.o: main.cu.o
+src/frontend/texturegpu.o: src/frontend/texturegpu.cu.o
 
-.PHONY : main.o
-
-# target to build an object file
-main.cu.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.o
-.PHONY : main.cu.o
-
-main.i: main.cu.i
-
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cu.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.i
-.PHONY : main.cu.i
-
-main.s: main.cu.s
-
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cu.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/main.cu.s
-.PHONY : main.cu.s
-
-texturegpu.o: texturegpu.cu.o
-
-.PHONY : texturegpu.o
+.PHONY : src/frontend/texturegpu.o
 
 # target to build an object file
-texturegpu.cu.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/texturegpu.cu.o
-.PHONY : texturegpu.cu.o
+src/frontend/texturegpu.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/texturegpu.cu.o
+.PHONY : src/frontend/texturegpu.cu.o
 
-texturegpu.i: texturegpu.cu.i
+src/frontend/texturegpu.i: src/frontend/texturegpu.cu.i
 
-.PHONY : texturegpu.i
+.PHONY : src/frontend/texturegpu.i
 
 # target to preprocess a source file
-texturegpu.cu.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/texturegpu.cu.i
-.PHONY : texturegpu.cu.i
+src/frontend/texturegpu.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/texturegpu.cu.i
+.PHONY : src/frontend/texturegpu.cu.i
 
-texturegpu.s: texturegpu.cu.s
+src/frontend/texturegpu.s: src/frontend/texturegpu.cu.s
 
-.PHONY : texturegpu.s
+.PHONY : src/frontend/texturegpu.s
 
 # target to generate assembly for a file
-texturegpu.cu.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/texturegpu.cu.s
-.PHONY : texturegpu.cu.s
+src/frontend/texturegpu.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/texturegpu.cu.s
+.PHONY : src/frontend/texturegpu.cu.s
 
-window.o: window.cpp.o
+src/frontend/window.o: src/frontend/window.cpp.o
 
-.PHONY : window.o
+.PHONY : src/frontend/window.o
 
 # target to build an object file
-window.cpp.o:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/window.cpp.o
-.PHONY : window.cpp.o
+src/frontend/window.cpp.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/window.cpp.o
+.PHONY : src/frontend/window.cpp.o
 
-window.i: window.cpp.i
+src/frontend/window.i: src/frontend/window.cpp.i
 
-.PHONY : window.i
+.PHONY : src/frontend/window.i
 
 # target to preprocess a source file
-window.cpp.i:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/window.cpp.i
-.PHONY : window.cpp.i
+src/frontend/window.cpp.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/window.cpp.i
+.PHONY : src/frontend/window.cpp.i
 
-window.s: window.cpp.s
+src/frontend/window.s: src/frontend/window.cpp.s
 
-.PHONY : window.s
+.PHONY : src/frontend/window.s
 
 # target to generate assembly for a file
-window.cpp.s:
-	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/window.cpp.s
-.PHONY : window.cpp.s
+src/frontend/window.cpp.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/frontend/window.cpp.s
+.PHONY : src/frontend/window.cpp.s
+
+src/kernels/sky.o: src/kernels/sky.cu.o
+
+.PHONY : src/kernels/sky.o
+
+# target to build an object file
+src/kernels/sky.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/sky.cu.o
+.PHONY : src/kernels/sky.cu.o
+
+src/kernels/sky.i: src/kernels/sky.cu.i
+
+.PHONY : src/kernels/sky.i
+
+# target to preprocess a source file
+src/kernels/sky.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/sky.cu.i
+.PHONY : src/kernels/sky.cu.i
+
+src/kernels/sky.s: src/kernels/sky.cu.s
+
+.PHONY : src/kernels/sky.s
+
+# target to generate assembly for a file
+src/kernels/sky.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/kernels/sky.cu.s
+.PHONY : src/kernels/sky.cu.s
+
+src/main.o: src/main.cu.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cu.o:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/main.cu.o
+.PHONY : src/main.cu.o
+
+src/main.i: src/main.cu.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cu.i:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/main.cu.i
+.PHONY : src/main.cu.i
+
+src/main.s: src/main.cu.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cu.s:
+	$(MAKE) -f CMakeFiles/rtrt.dir/build.make CMakeFiles/rtrt.dir/src/main.cu.s
+.PHONY : src/main.cu.s
 
 # Help Target
 help:
@@ -213,15 +240,18 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... rtrt"
 	@echo "... edit_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... texturegpu.o"
-	@echo "... texturegpu.i"
-	@echo "... texturegpu.s"
-	@echo "... window.o"
-	@echo "... window.i"
-	@echo "... window.s"
+	@echo "... src/frontend/texturegpu.o"
+	@echo "... src/frontend/texturegpu.i"
+	@echo "... src/frontend/texturegpu.s"
+	@echo "... src/frontend/window.o"
+	@echo "... src/frontend/window.i"
+	@echo "... src/frontend/window.s"
+	@echo "... src/kernels/sky.o"
+	@echo "... src/kernels/sky.i"
+	@echo "... src/kernels/sky.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

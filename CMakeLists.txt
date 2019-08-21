@@ -12,10 +12,11 @@ find_package(CUDA REQUIRED)
 find_package(SDL2 REQUIRED)
 
 
-add_executable(${PROJECT_NAME} main.cu window.cpp texturegpu.cu)
+add_executable(${PROJECT_NAME} src/main.cu src/frontend/window.cpp src/kernels/sky.cu
+  src/frontend/texturegpu.cu)
 
-
-target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS}
+  "${CMAKE_SOURCE_DIR}/src/")
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)

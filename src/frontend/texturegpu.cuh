@@ -2,7 +2,7 @@
 
 #include "SDL.h"
 
-#include "cuda_utils.cuh"
+#include "utils/cuda_utils.cuh"
 
 class TextureGPU {
 public:
@@ -21,8 +21,7 @@ public:
   }
 
   __device__ void set_rgb(int x, int y, Uint8 r, Uint8 g, Uint8 b) {
-    /* set_rgba(x, y, r, g, b, 0xFF); */
-    access(x, y) = 0x00FF00FF;
+    set_rgba(x, y, r, g, b, 0xFF);
   }
 
   __device__ void set_rgba(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
@@ -32,7 +31,7 @@ public:
                    ((a >> fmt_->Aloss) << fmt_->Ashift & fmt_->Amask);
   }
 
-  void render(SDL_Renderer *renderer) {
+  void copy_to_renderer(SDL_Renderer *renderer) {
     SDL_RenderCopy(renderer, tex_, NULL, NULL);
   }
 

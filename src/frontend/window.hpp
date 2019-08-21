@@ -18,8 +18,8 @@ public:
 
   SDL_Renderer *get_renderer() const { return renderer_; }
 
-  void clear_renderer() const { SDL_RenderClear(renderer_); }
-  void update_renderer() const { SDL_RenderPresent(renderer_); }
+  void clear_render() const { SDL_RenderClear(renderer_); }
+  void present_render() const { SDL_RenderPresent(renderer_); }
 
   bool should_quit() const { return quit_; }
   void close() { quit_ = true; }

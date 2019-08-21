@@ -6,14 +6,13 @@
 #include <algorithm>
 #include <utility>
 
-#define cudaErrchk(ans)                                                         \
+#define cudaCheckErr(ans)                                                      \
   { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line,
                       bool abort = true) {
   if (code != cudaSuccess) {
-    std::cerr << "GPUassert" << cudaGetErrorString(code) << " "
-              << file << " " << std::to_string(line)
-              << std::endl;
+    std::cerr << "GPUassert" << cudaGetErrorString(code) << " " << file << " "
+              << std::to_string(line) << std::endl;
     if (abort)
       exit(code);
   }
@@ -21,14 +20,14 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
 
 template <class T> T *cuda_malloc_managed(size_t size_in_bytes) {
   T *p = NULL;
-  cudaMallocManaged(&p, size_in_bytes);
+  cudaCheckErr(cudaMallocManaged(&p, size_in_bytes));
 
   return p;
 }
 
 template <class T> T *cuda_malloc(size_t size_in_bytes) {
   T *p = NULL;
-  cudaMalloc(&p, size_in_bytes);
+  cudaCheckErr(cudaMalloc(&p, size_in_bytes));
 
   return p;
 }
@@ -37,11 +36,11 @@ class Managed {
 public:
   void *operator new(size_t len) {
     void *ptr;
-    cudaMallocManaged(&ptr, len);
+    cudaCheckErr(cudaMallocManaged(&ptr, len));
     return ptr;
   }
 
-  void operator delete(void *ptr) { cudaFree(ptr); }
+  void operator delete(void *ptr) { cudaCheckErr(cudaFree(ptr)); }
 };
 
 template <class T> class managed_ptr {
@@ -49,7 +48,7 @@ public:
   explicit managed_ptr(T *data, void *mem) : data_(data), mem_(mem) {}
   ~managed_ptr() {
     data_->~T();
-    cudaFree(mem_);
+    cudaCheckErr(cudaFree(mem_));
   }
 
   managed_ptr(const managed_ptr &) = delete;

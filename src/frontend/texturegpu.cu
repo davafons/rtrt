@@ -1,4 +1,3 @@
-#include "cuda_utils.cuh"
 #include "texturegpu.cuh"
 
 TextureGPU::TextureGPU(SDL_Renderer *renderer, size_t width, size_t height,
@@ -9,15 +8,15 @@ TextureGPU::TextureGPU(SDL_Renderer *renderer, size_t width, size_t height,
                            SDL_TEXTUREACCESS_STREAMING, width, height);
 
   fmt_ = cuda_malloc_managed<SDL_PixelFormat>(sizeof(SDL_PixelFormat));
-  cudaErrchk(cudaMemcpy(fmt_, SDL_AllocFormat(pixel_format_enum),
-                        sizeof(SDL_PixelFormat), cudaMemcpyHostToDevice));
+  cudaCheckErr(cudaMemcpy(fmt_, SDL_AllocFormat(pixel_format_enum),
+                          sizeof(SDL_PixelFormat), cudaMemcpyHostToDevice));
 
   d_pixels_ = cuda_malloc<Uint32>(width_ * height_ * 4);
 }
 
 TextureGPU::~TextureGPU() {
-  cudaErrchk(cudaFree(d_pixels_));
-  cudaErrchk(cudaFree(fmt_));
+  cudaCheckErr(cudaFree(d_pixels_));
+  cudaCheckErr(cudaFree(fmt_));
   SDL_DestroyTexture(tex_);
 }
 
@@ -29,8 +28,9 @@ void TextureGPU::copy_to_cpu() {
 
   SDL_LockTexture(tex_, NULL, (void **)&h_pixels, &pitch);
 
-  cudaErrchk(cudaMemcpy(h_pixels, d_pixels_, width_ * height_ * sizeof(Uint32),
-                        cudaMemcpyDeviceToHost));
+  cudaCheckErr(cudaMemcpy(h_pixels, d_pixels_,
+                          width_ * height_ * sizeof(Uint32),
+                          cudaMemcpyDeviceToHost));
 
   SDL_UnlockTexture(tex_);
 }
