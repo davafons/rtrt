@@ -33,7 +33,7 @@ int main() {
     Window window("Raytracer", 800, 600);
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
-        window.get_renderer(), window.get_width(), window.get_height());
+        window.get_renderer(), window.get_width(), window.get_height(), 0.5f);
 
     while (!window.should_quit()) {
       window.update_fps();

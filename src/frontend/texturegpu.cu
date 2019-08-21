@@ -1,17 +1,21 @@
+#include <type_traits>
+
 #include "texturegpu.cuh"
 
 TextureGPU::TextureGPU(SDL_Renderer *renderer, size_t width, size_t height,
-                       Uint32 pixel_format_enum)
-    : width_(width), height_(height) {
+                       float scale_factor)
+    : width_(width * scale_factor), height_(height * scale_factor) {
 
-  tex_ = SDL_CreateTexture(renderer, pixel_format_enum,
-                           SDL_TEXTUREACCESS_STREAMING, width, height);
+  tex_ = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
+                           SDL_TEXTUREACCESS_STREAMING, width_, height_);
 
   fmt_ = cuda_malloc_managed<SDL_PixelFormat>(sizeof(SDL_PixelFormat));
-  cudaCheckErr(cudaMemcpy(fmt_, SDL_AllocFormat(pixel_format_enum),
+  cudaCheckErr(cudaMemcpy(fmt_, SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32),
                           sizeof(SDL_PixelFormat), cudaMemcpyHostToDevice));
 
-  d_pixels_ = cuda_malloc<Uint32>(width_ * height_ * 4);
+  size_in_bytes_ = width_ * height_ * fmt_->BytesPerPixel;
+
+  d_pixels_ = cuda_malloc<Uint32>(size_in_bytes_);
 }
 
 TextureGPU::~TextureGPU() {
@@ -28,9 +32,8 @@ void TextureGPU::copy_to_cpu() {
 
   SDL_LockTexture(tex_, NULL, (void **)&h_pixels, &pitch);
 
-  cudaCheckErr(cudaMemcpy(h_pixels, d_pixels_,
-                          width_ * height_ * sizeof(Uint32),
-                          cudaMemcpyDeviceToHost));
+  cudaCheckErr(
+      cudaMemcpy(h_pixels, d_pixels_, size_in_bytes_, cudaMemcpyDeviceToHost));
 
   SDL_UnlockTexture(tex_);
 }
