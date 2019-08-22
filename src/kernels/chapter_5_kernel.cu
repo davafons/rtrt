@@ -24,7 +24,7 @@ __device__ float hit_sphere_5(const Vec3 &center, float radius, const Ray &r) {
   }
 }
 
-__device__ Vec3 color_5(const Ray &r, HitableList **hitable_objects) {
+__device__ Vec3 color_5(const Ray &r, Hitable **hitable_objects) {
   HitRecord rec;
 
   if ((*hitable_objects)->hit(r, 0.0f, 10.0f, rec)) {
@@ -40,8 +40,8 @@ __device__ Vec3 color_5(const Ray &r, HitableList **hitable_objects) {
   }
 }
 
-__global__ void chapter_5_kernel(managed_ptr<TextureGPU> tex, World world,
-                                 HitableList **hitable_objects) {
+__global__ void chapter_5_kernel(TextureGPU *tex, World world,
+                                 Hitable **hitable_objects) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
   int y = threadIdx.y + blockIdx.y * blockDim.y;
 

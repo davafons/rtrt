@@ -2,11 +2,11 @@
 
 class World;
 class TextureGPU;
-class HitableList;
+class Hitable;
 template <class T> class managed_ptr;
 
 __global__ void chapter_2_kernel(TextureGPU *tex, World world);
 __global__ void chapter_3_kernel(TextureGPU *tex, World world);
 __global__ void chapter_4_kernel(TextureGPU *tex, World world);
-__global__ void chapter_5_kernel(managed_ptr<TextureGPU> tex, World world,
-                                 HitableList **hitable_objects);
+__global__ void chapter_5_kernel(TextureGPU* tex, World world,
+                                 Hitable** hitable_objects);

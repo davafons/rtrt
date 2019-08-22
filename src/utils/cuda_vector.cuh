@@ -14,7 +14,7 @@ public:
   using size_type = size_t;
 
   __device__ cuda_vector(size_type size = 0)
-      : data_(NULL), size_(size), capacity_(size) {
+      : data_(NULL), size_(size), capacity_(1) {
     data_ = new T[capacity_];
   }
 
