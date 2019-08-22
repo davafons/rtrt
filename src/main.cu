@@ -13,11 +13,12 @@
 #include "math/vec3.cuh"
 #include "utils/config.cuh"
 #include "utils/cuda_utils.cuh"
+#include "utils/managed_ptr.cuh"
 #include "utils/world.cuh"
 
 template <typename... Args>
-void launch_2D_texture_kernel(void (*kernel)(TextureGPU *, Args...),
-                              const Config &config, TextureGPU *tex,
+void launch_2D_texture_kernel(void (*kernel)(managed_ptr<TextureGPU>, Args...),
+                              const Config &config, managed_ptr<TextureGPU> tex,
                               Args... args) {
   dim3 blocks(tex->get_width() / config.threads.x + 1,
               tex->get_height() / config.threads.y + 1);
@@ -29,7 +30,7 @@ void launch_2D_texture_kernel(void (*kernel)(TextureGPU *, Args...),
 }
 
 __global__ void create_world(HitableList **hitable_objects) {
-  *hitable_objects = new HitableList(1);
+  *hitable_objects = new HitableList(2);
 }
 
 int main() {
@@ -42,7 +43,8 @@ int main() {
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
         window.get_renderer(), window.get_width(), window.get_height());
 
-    HitableList **hitable_objects = cuda_malloc<HitableList*>(sizeof(HitableList*));
+    HitableList **hitable_objects =
+        cuda_malloc<HitableList *>(sizeof(HitableList *));
     create_world<<<1, 1>>>(hitable_objects);
 
     cudaCheckErr(cudaDeviceSynchronize());
@@ -64,8 +66,8 @@ int main() {
 
       window.clear_render();
 
-      launch_2D_texture_kernel(chapter_5_kernel, gConfig, viewport.get(),
-                               gWorld, hitable_objects);
+      launch_2D_texture_kernel(chapter_5_kernel, gConfig, viewport, gWorld,
+                               hitable_objects);
 
       viewport->copy_to_renderer(window.get_renderer());
 

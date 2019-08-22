@@ -7,6 +7,7 @@
 #include "math/ray.cuh"
 #include "math/vec3.cuh"
 #include "utils/cuda_utils.cuh"
+#include "utils/managed_ptr.cuh"
 #include "utils/world.cuh"
 
 __device__ float hit_sphere_5(const Vec3 &center, float radius, const Ray &r) {
@@ -39,7 +40,7 @@ __device__ Vec3 color_5(const Ray &r, HitableList **hitable_objects) {
   }
 }
 
-__global__ void chapter_5_kernel(TextureGPU *tex, World world,
+__global__ void chapter_5_kernel(managed_ptr<TextureGPU> tex, World world,
                                  HitableList **hitable_objects) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
   int y = threadIdx.y + blockIdx.y * blockDim.y;
