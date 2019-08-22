@@ -35,6 +35,11 @@ __global__ void create_world(HitableList **hitable_objects) {
   (*hitable_objects)->push_back(new Sphere(Vec3(0, -100.5f, -1), 100));
 }
 
+template <class T, typename... Args>
+__global__ void push_back(HitableList **hitable_objects, Args... args) {
+  (*hitable_objects)->push_back(new T(args...));
+}
+
 int main() {
   World gWorld;
   Config gConfig;
@@ -51,6 +56,10 @@ int main() {
 
     cudaCheckErr(cudaDeviceSynchronize());
     cudaCheckErr(cudaGetLastError());
+
+    /* push_back<Sphere><<<1, 1>>>(hitable_objects, Vec3(-1, 0, -1), 0.5f); */
+    /* cudaCheckErr(cudaDeviceSynchronize()); */
+    /* cudaCheckErr(cudaGetLastError()); */
 
     while (!window.should_quit()) {
       window.update_fps();
