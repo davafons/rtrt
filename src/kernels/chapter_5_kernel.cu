@@ -51,9 +51,9 @@ __global__ void chapter_5_kernel(TextureGPU *tex, World world) {
           world.lower_left_corner + u * world.horizontal + v * world.vertical);
   Vec3 col = color_5(ray);
 
-  Uint8 r = col.r() * 255.99;
-  Uint8 g = col.g() * 255.99;
-  Uint8 b = col.b() * 255.99;
+  Uint8 r = col.r() * 255.99f;
+  Uint8 g = col.g() * 255.99f;
+  Uint8 b = col.b() * 255.99f;
 
   tex->set_rgb(x, y, r, g, b);
 }

@@ -15,9 +15,9 @@ __global__ void chapter_2_kernel(TextureGPU *tex) {
 
   Vec3 col(float(x) / float(w), float(h - y) / float(h), 0.2f);
 
-  Uint8 r = col.r() * 255.99;
-  Uint8 g = col.g() * 255.99;
-  Uint8 b = col.b() * 255.99;
+  Uint8 r = col.r() * 255.99f;
+  Uint8 g = col.g() * 255.99f;
+  Uint8 b = col.b() * 255.99f;
 
   tex->set_rgb(x, y, r, g, b);
 }
