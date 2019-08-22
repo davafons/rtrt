@@ -1,8 +1,12 @@
 #include "kernels.cuh"
 
+#include <cfloat>
+
 #include "frontend/texturegpu.cuh"
+#include "hitable/hitable_list.cuh"
 #include "math/ray.cuh"
 #include "math/vec3.cuh"
+#include "utils/cuda_utils.cuh"
 #include "utils/world.cuh"
 
 __device__ float hit_sphere_5(const Vec3 &center, float radius, const Ray &r) {
@@ -19,22 +23,24 @@ __device__ float hit_sphere_5(const Vec3 &center, float radius, const Ray &r) {
   }
 }
 
-__device__ Vec3 color_5(const Ray &r) {
-  float t = hit_sphere_5(Vec3(0, 0, -1), 0.5f, r);
+__device__ Vec3 color_5(const Ray &r, HitableList **hitable_objects) {
+  HitRecord rec;
 
-  if (t > 0.0f) {
+  if ((*hitable_objects)->hit(r, 0.0f, 10.0f, rec)) {
 
-    Vec3 N = unit_vector(r.point_at_parameter(t) - Vec3(0, 0, -1));
-    return 0.5f * Vec3(N.x() + 1, N.y() + 1, N.z() + 1);
+    return 0.5f *
+           Vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
+
+  } else {
+    Vec3 unit_direction = unit_vector(r.direction());
+    float t = 0.5f * (unit_direction.y() + 1.0f);
+
+    return (1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(0.5f, 0.7f, 1.0f);
   }
-
-  Vec3 unit_direction = unit_vector(r.direction());
-  t = 0.5f * (unit_direction.y() + 1.0f);
-
-  return (1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(0.5f, 0.7f, 1.0f);
 }
 
-__global__ void chapter_5_kernel(TextureGPU *tex, World world) {
+__global__ void chapter_5_kernel(TextureGPU *tex, World world,
+                                 HitableList **hitable_objects) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
   int y = threadIdx.y + blockIdx.y * blockDim.y;
 
@@ -49,7 +55,8 @@ __global__ void chapter_5_kernel(TextureGPU *tex, World world) {
 
   Ray ray(world.origin,
           world.lower_left_corner + u * world.horizontal + v * world.vertical);
-  Vec3 col = color_5(ray);
+
+  Vec3 col = color_5(ray, hitable_objects);
 
   Uint8 r = col.r() * 255.99f;
   Uint8 g = col.g() * 255.99f;

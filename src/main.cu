@@ -6,6 +6,8 @@
 
 #include "frontend/texturegpu.cuh"
 #include "frontend/window.hpp"
+#include "hitable/hitable_list.cuh"
+#include "hitable/sphere.cuh"
 #include "kernels/kernels.cuh"
 #include "math/ray.cuh"
 #include "math/vec3.cuh"
@@ -21,8 +23,13 @@ void launch_2D_texture_kernel(void (*kernel)(TextureGPU *, Args...),
               tex->get_height() / config.threads.y + 1);
 
   kernel<<<blocks, config.threads>>>(tex, std::forward<Args>(args)...);
+  cudaCheckErr(cudaGetLastError());
 
   tex->copy_to_cpu();
+}
+
+__global__ void create_world(HitableList **hitable_objects) {
+  *hitable_objects = new HitableList(1);
 }
 
 int main() {
@@ -33,7 +40,13 @@ int main() {
     Window window("Raytracer", 800, 400);
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
-        window.get_renderer(), window.get_width(), window.get_height(), 0.75f);
+        window.get_renderer(), window.get_width(), window.get_height());
+
+    HitableList **hitable_objects = cuda_malloc<HitableList*>(sizeof(HitableList*));
+    create_world<<<1, 1>>>(hitable_objects);
+
+    cudaCheckErr(cudaDeviceSynchronize());
+    cudaCheckErr(cudaGetLastError());
 
     while (!window.should_quit()) {
       window.update_fps();
@@ -52,7 +65,7 @@ int main() {
       window.clear_render();
 
       launch_2D_texture_kernel(chapter_5_kernel, gConfig, viewport.get(),
-                               gWorld);
+                               gWorld, hitable_objects);
 
       viewport->copy_to_renderer(window.get_renderer());
 

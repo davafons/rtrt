@@ -31,7 +31,6 @@ void TextureGPU::copy_to_cpu() {
   cudaDeviceSynchronize();
 
   SDL_LockTexture(tex_, NULL, (void **)&h_pixels, &pitch);
-
   cudaCheckErr(
       cudaMemcpy(h_pixels, d_pixels_, size_in_bytes_, cudaMemcpyDeviceToHost));
 
