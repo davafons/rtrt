@@ -66,7 +66,7 @@ int main() {
     Window window("Raytracer", 800, 400);
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
-        window.get_renderer(), window.get_width(), window.get_height(), 0.75f);
+        window.get_renderer(), window.get_width(), window.get_height(), 1.0f);
 
     HitableList **hitable_objects =
         cuda_malloc<HitableList *>(sizeof(HitableList *));
@@ -89,7 +89,9 @@ int main() {
     /* cudaCheckErr(cudaDeviceSynchronize()); */
     /* cudaCheckErr(cudaGetLastError()); */
 
-    gCamera.set_ns(20);
+    int ns = 10;
+    int MAX_NS = 200;
+    gCamera.set_ns(ns);
 
     while (!window.should_quit()) {
       window.update_fps();
@@ -107,9 +109,13 @@ int main() {
 
       window.clear_render();
 
-      launch_2D_texture_kernel(chapter_6_kernel, gConfig, viewport.get(),
-                               gCamera, (Hitable **)hitable_objects,
-                               d_rand_state);
+      if (ns < MAX_NS) {
+        launch_2D_texture_kernel(chapter_7_kernel, gConfig, viewport.get(),
+                                 gCamera, (Hitable **)hitable_objects,
+                                 d_rand_state);
+        ns += 20;
+        gCamera.set_ns(ns);
+      }
 
       viewport->copy_to_renderer(window.get_renderer());
 
