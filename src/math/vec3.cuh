@@ -5,7 +5,8 @@
 
 class Vec3 {
 public:
-  __host__ __device__ Vec3(float e0 = 0.0f, float e1 = 0.0f, float e2 = 0.0f) {
+  __host__ __device__ explicit Vec3(float e0 = 0.0f, float e1 = 0.0f,
+                                    float e2 = 0.0f) {
     e[0] = e0;
     e[1] = e1;
     e[2] = e2;

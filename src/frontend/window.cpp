@@ -37,8 +37,8 @@ Window::~Window() {
   SDL_DestroyWindow(window_);
 }
 
-void Window::update_fps() {
-  ++counted_frames_;
-
-  fps_ = counted_frames_ / (SDL_GetTicks() / 1000.0f);
+void Window::update_delta_time() {
+  size_t current_frame = SDL_GetTicks();
+  delta_time_ = float(current_frame - last_frame_) / 1000.0f;
+  last_frame_ = current_frame;
 }

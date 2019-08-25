@@ -13,8 +13,6 @@ public:
 
   size_t get_width() const { return width_; }
   size_t get_height() const { return height_; }
-  float get_fps() const { return fps_; }
-  size_t get_counted_frames() const { return counted_frames_; }
 
   SDL_Renderer *get_renderer() const { return renderer_; }
 
@@ -24,17 +22,18 @@ public:
   bool should_quit() const { return quit_; }
   void close() { quit_ = true; }
 
-  void update_fps();
-
+  float get_delta_time() const { return delta_time_; }
+  float get_fps() const { return 1.0f / delta_time_; }
+  void update_delta_time();
 private:
   SDL_Window *window_;
   SDL_Renderer *renderer_;
 
+  float delta_time_ = 0.0f;
+  size_t last_frame_ = 0;
+
   size_t width_ = 0;
   size_t height_ = 0;
-
-  size_t counted_frames_ = 0;
-  float fps_ = 0.0f;
 
   bool quit_ = true;
 };

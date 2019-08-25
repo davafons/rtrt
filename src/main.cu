@@ -68,10 +68,10 @@ int main() {
   {
     Window window("Raytracer", 800, 400);
     Camera gCamera(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), 90,
-                   float(800) / 400);
+                   float(window.get_width()) / window.get_height());
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
-        window.get_renderer(), window.get_width(), window.get_height(), 1.0f);
+        window.get_renderer(), window.get_width(), window.get_height(), 0.75f);
 
     HitableList **hitable_objects =
         cuda_malloc<HitableList *>(sizeof(HitableList *));
@@ -99,18 +99,45 @@ int main() {
     gCamera.set_ns(ns);
 
     while (!window.should_quit()) {
-      window.update_fps();
-
       SDL_Event e;
       while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
           window.close();
         }
 
-        if (e.key.keysym.sym == SDLK_ESCAPE) {
+        switch (e.key.keysym.sym) {
+
+        case SDLK_ESCAPE:
           window.close();
+          break;
+
+        case SDLK_w:
+          gCamera.move(Camera::Movement::FORWARD, window.get_delta_time());
+          break;
+
+        case SDLK_s:
+          gCamera.move(Camera::Movement::BACKWARD, window.get_delta_time());
+          break;
+
+        case SDLK_d:
+          gCamera.move(Camera::Movement::RIGHT, window.get_delta_time());
+          break;
+
+        case SDLK_a:
+          gCamera.move(Camera::Movement::LEFT, window.get_delta_time());
+          break;
+
+        case SDLK_e:
+          gCamera.move(Camera::Movement::UP, window.get_delta_time());
+          break;
+
+        case SDLK_q:
+          gCamera.move(Camera::Movement::DOWN, window.get_delta_time());
+          break;
         }
       }
+
+      window.update_delta_time();
 
       window.clear_render();
 
@@ -119,16 +146,16 @@ int main() {
                                  gCamera, (Hitable **)hitable_objects,
                                  d_rand_state);
         /* ns += 20; */
-        gCamera.set_ns(ns);
+        /* gCamera.set_ns(ns); */
       }
+
+      /* gCamera.move_right(0.01f): */
 
       viewport->copy_to_renderer(window.get_renderer());
 
       window.present_render();
 
-      if (window.get_counted_frames() % 200 == 0) {
-        std::cout << window.get_fps() << std::endl;
-      }
+      std::cout << window.get_fps() << std::endl;
     }
   }
 
