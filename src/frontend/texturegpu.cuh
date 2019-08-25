@@ -14,6 +14,8 @@ public:
   __host__ __device__ size_t get_width() const { return width_; }
   __host__ __device__ size_t get_height() const { return height_; }
 
+  __host__ __device__ size_t get_n_pixels() const { return width_ * height_; }
+
   __device__ Uint32 &access(int x, int y) { return d_pixels_[y * width_ + x]; }
 
   __device__ void set_rgb(int x, int y, Uint8 r, Uint8 g, Uint8 b) {
