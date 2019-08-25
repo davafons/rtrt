@@ -62,6 +62,43 @@ __global__ void push_back(HitableList **hitable_objects, Args... args) {
   (*hitable_objects)->push_back(new T(args...));
 }
 
+void input_thread_task(Window &window, Camera &camera) {
+  while (!window.should_quit()) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e) != 0) {
+      if (e.type == SDL_QUIT) {
+        window.close();
+      }
+    }
+
+    const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+    if (state[SDL_SCANCODE_W]) {
+      camera.move(Camera::Movement::FORWARD, window.get_delta_time());
+    }
+
+    if (state[SDL_SCANCODE_S]) {
+      camera.move(Camera::Movement::BACKWARD, window.get_delta_time());
+    }
+
+    if (state[SDL_SCANCODE_A]) {
+      camera.move(Camera::Movement::LEFT, window.get_delta_time());
+    }
+
+    if (state[SDL_SCANCODE_D]) {
+      camera.move(Camera::Movement::RIGHT, window.get_delta_time());
+    }
+
+    if (state[SDL_SCANCODE_Q]) {
+      camera.move(Camera::Movement::DOWN, window.get_delta_time());
+    }
+
+    if (state[SDL_SCANCODE_E]) {
+      camera.move(Camera::Movement::UP, window.get_delta_time());
+    }
+  }
+}
+
 int main() {
   Config gConfig;
 
@@ -94,69 +131,42 @@ int main() {
     /* cudaCheckErr(cudaDeviceSynchronize()); */
     /* cudaCheckErr(cudaGetLastError()); */
 
-    int ns = 20;
-    int MAX_NS = 200;
-    gCamera.set_ns(ns);
+    std::thread input_thread(input_thread_task, std::ref(window),
+                             std::ref(gCamera));
+
+    gCamera.set_ns(20);
+
+    int frames = 0;
+    float time = 0.0f;
+    float avg_fps = 0.0f;
 
     while (!window.should_quit()) {
-      SDL_Event e;
-      while (SDL_PollEvent(&e) != 0) {
-        if (e.type == SDL_QUIT) {
-          window.close();
-        }
-
-        switch (e.key.keysym.sym) {
-
-        case SDLK_ESCAPE:
-          window.close();
-          break;
-
-        case SDLK_w:
-          gCamera.move(Camera::Movement::FORWARD, window.get_delta_time());
-          break;
-
-        case SDLK_s:
-          gCamera.move(Camera::Movement::BACKWARD, window.get_delta_time());
-          break;
-
-        case SDLK_d:
-          gCamera.move(Camera::Movement::RIGHT, window.get_delta_time());
-          break;
-
-        case SDLK_a:
-          gCamera.move(Camera::Movement::LEFT, window.get_delta_time());
-          break;
-
-        case SDLK_e:
-          gCamera.move(Camera::Movement::UP, window.get_delta_time());
-          break;
-
-        case SDLK_q:
-          gCamera.move(Camera::Movement::DOWN, window.get_delta_time());
-          break;
-        }
-      }
-
       window.update_delta_time();
 
       window.clear_render();
 
-      if (ns < MAX_NS) {
-        launch_2D_texture_kernel(chapter_7_kernel, gConfig, viewport.get(),
-                                 gCamera, (Hitable **)hitable_objects,
-                                 d_rand_state);
-        /* ns += 20; */
-        /* gCamera.set_ns(ns); */
-      }
-
-      /* gCamera.move_right(0.01f): */
+      launch_2D_texture_kernel(chapter_7_kernel, gConfig, viewport.get(),
+                               gCamera, (Hitable **)hitable_objects,
+                               d_rand_state);
 
       viewport->copy_to_renderer(window.get_renderer());
 
       window.present_render();
 
-      std::cout << window.get_fps() << std::endl;
+      time += window.get_delta_time();
+      ++frames;
+      avg_fps += window.get_fps();
+
+      if (time >= 0.5f) {
+        std::cout << avg_fps / frames << std::endl;
+
+        time = 0.0f;
+        frames = 0;
+        avg_fps = 0;
+      }
     }
+
+    input_thread.join();
   }
 
   cudaCheckErr(cudaDeviceReset());

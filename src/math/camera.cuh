@@ -80,5 +80,5 @@ private:
   Vec3 vertical_;
   int ns_;
 
-  float speed_ = 2.5f;
+  float speed_ = 0.0001f;
 };

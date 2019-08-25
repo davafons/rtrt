@@ -25,6 +25,7 @@ public:
   float get_delta_time() const { return delta_time_; }
   float get_fps() const { return 1.0f / delta_time_; }
   void update_delta_time();
+
 private:
   SDL_Window *window_;
   SDL_Renderer *renderer_;
