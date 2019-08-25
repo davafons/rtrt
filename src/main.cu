@@ -34,9 +34,13 @@ __global__ void create_world(HitableList **hitable_objects) {
   int y = threadIdx.y + blockIdx.y * blockDim.y;
 
   if ((x == 0) && (y == 0)) {
+    float R = cos(M_PI / 4);
     *hitable_objects = new HitableList();
     (*hitable_objects)->push_back(new Sphere(Vec3(0, 0, -1), 0.5f));
     (*hitable_objects)->push_back(new Sphere(Vec3(0, -100.5f, -1), 100));
+    (*hitable_objects)->push_back(new Sphere(Vec3(1, 0, -1), 0.5f));
+    (*hitable_objects)->push_back(new Sphere(Vec3(-1, 0, -1), 0.5f));
+    (*hitable_objects)->push_back(new Sphere(Vec3(-1, 0, -1), -0.45f));
   }
 }
 
@@ -59,11 +63,12 @@ __global__ void push_back(HitableList **hitable_objects, Args... args) {
 }
 
 int main() {
-  Camera gCamera;
   Config gConfig;
 
   {
     Window window("Raytracer", 800, 400);
+    Camera gCamera(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), 90,
+                   float(800) / 400);
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
         window.get_renderer(), window.get_width(), window.get_height(), 1.0f);
@@ -89,7 +94,7 @@ int main() {
     /* cudaCheckErr(cudaDeviceSynchronize()); */
     /* cudaCheckErr(cudaGetLastError()); */
 
-    int ns = 10;
+    int ns = 20;
     int MAX_NS = 200;
     gCamera.set_ns(ns);
 
@@ -113,7 +118,7 @@ int main() {
         launch_2D_texture_kernel(chapter_7_kernel, gConfig, viewport.get(),
                                  gCamera, (Hitable **)hitable_objects,
                                  d_rand_state);
-        ns += 20;
+        /* ns += 20; */
         gCamera.set_ns(ns);
       }
 
