@@ -118,9 +118,14 @@ int main() {
   Config gConfig;
 
   {
+    Vec3 lookfrom(3, 3, 2);
+    Vec3 lookat(0, 0, -1);
+
+    float aperture = 2.0f;
+
     Window window("Raytracer", 800, 400);
-    Camera gCamera(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), 90,
-                   float(window.get_width()) / window.get_height());
+    Camera gCamera(lookfrom, lookat, Vec3(0, 1, 0), 20,
+                   window.get_aspect_ratio(), aperture);
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
         window.get_renderer(), window.get_width(), window.get_height(), 0.75f);
@@ -156,7 +161,7 @@ int main() {
 
       window.clear_render();
 
-      launch_2D_texture_kernel(chapter_8_kernel, gConfig, viewport.get(),
+      launch_2D_texture_kernel(chapter_11_kernel, gConfig, viewport.get(),
                                gCamera, (Hitable **)hitable_objects,
                                d_rand_state);
 

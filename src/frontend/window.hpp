@@ -13,6 +13,7 @@ public:
 
   size_t get_width() const { return width_; }
   size_t get_height() const { return height_; }
+  float get_aspect_ratio() const { return float(width_) / height_; }
 
   SDL_Renderer *get_renderer() const { return renderer_; }
 

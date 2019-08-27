@@ -1,5 +1,6 @@
 #pragma once
 
+#include "math/math.cuh"
 #include "math/ray.cuh"
 #include "math/vec3.cuh"
 
@@ -7,11 +8,15 @@ class Camera {
 public:
   enum class Movement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 
-  Camera(Vec3 lookfrom, Vec3 lookat, Vec3 vup, float vfov, float aspect)
+  Camera(Vec3 lookfrom, Vec3 lookat, Vec3 vup, float vfov, float aspect,
+         float aperture)
       : lookfrom_(lookfrom), lookat_(lookat), vup_(vup), ns_(10) {
-    float theta = 90 * M_PI / 180;
+
+    float theta = vfov * (float(M_PI) / 180.0f);
     half_height_ = tan(theta / 2);
     half_width_ = aspect * half_height_;
+
+    lens_radius_ = aperture / 2;
 
     update_camera_vectors();
   }
@@ -21,18 +26,28 @@ public:
                               lookfrom_);
   }
 
+  __device__ Ray get_ray(float s, float t, curandState *local_rand_state) {
+    Vec3 rd = lens_radius_ * Math::random_in_unit_disk(local_rand_state);
+    Vec3 offset = u_ * rd.x() + v_ * rd.y();
+
+    return Ray(lookfrom_ + offset, lower_left_corner_ + s * horizontal_ +
+                                       t * vertical_ - lookfrom_ - offset);
+  }
+
   __host__ __device__ int get_ns() const { return ns_; }
   void set_ns(int ns) { ns_ = ns; }
 
   void update_camera_vectors() {
-    Vec3 u, v, w;
-    w = unit_vector(lookfrom_ - lookat_);
-    u = unit_vector(cross(vup_, w));
-    v = cross(w, u);
+    focus_dist_ = (lookfrom_ - lookat_).length();
 
-    lower_left_corner_ = lookfrom_ - half_width_ * u - half_height_ * v - w;
-    horizontal_ = 2 * half_width_ * u;
-    vertical_ = 2 * half_height_ * v;
+    w_ = unit_vector(lookfrom_ - lookat_);
+    u_ = unit_vector(cross(vup_, w_));
+    v_ = cross(w_, u_);
+
+    lower_left_corner_ = lookfrom_ - half_width_ * focus_dist_ * u_ -
+                         half_height_ * focus_dist_ * v_ - focus_dist_ * w_;
+    horizontal_ = 2 * half_width_ * focus_dist_ * u_;
+    vertical_ = 2 * half_height_ * focus_dist_ * v_;
   }
 
   void move(Movement direction, float deltaTime) {
@@ -79,6 +94,10 @@ private:
   Vec3 horizontal_;
   Vec3 vertical_;
   int ns_;
+
+  float lens_radius_;
+  float focus_dist_;
+  Vec3 u_, v_, w_;
 
   float speed_ = 0.0001f;
 };
