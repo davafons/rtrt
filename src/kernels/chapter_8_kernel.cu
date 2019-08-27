@@ -5,26 +5,31 @@
 #include "frontend/texturegpu.cuh"
 #include "hitable/hitable_list.cuh"
 #include "math/camera.cuh"
+#include "math/math.cuh"
 #include "math/ray.cuh"
 #include "math/vec3.cuh"
 #include "utils/cuda_utils.cuh"
 #include "utils/managed_ptr.cuh"
 #include "utils/world.cuh"
-#include "math/math.cuh"
 
-__device__ Vec3 color_7(const Ray &r, Hitable **hitable_objects,
+__device__ Vec3 color_8(const Ray &r, Hitable **hitable_objects,
                         curandState *local_rand_state) {
   Ray cur_ray = r;
-  float cur_attenuation = 1.0f;
+  Vec3 cur_attenuation = Vec3(1.0f, 1.0f, 1.0f);
 
   for (int i = 0; i < 50; ++i) {
     HitRecord rec;
     if ((*hitable_objects)->hit(cur_ray, 0.001f, 10.0f, rec)) {
+      Ray scattered;
+      Vec3 attenuation;
 
-      Vec3 target =
-          rec.p + rec.normal + Math::random_in_unit_sphere(local_rand_state);
-      cur_attenuation *= 0.5f;
-      cur_ray = Ray(rec.p, target - rec.p);
+      if (rec.mat_ptr->scatter(cur_ray, rec, attenuation, scattered,
+                               local_rand_state)) {
+        cur_attenuation *= attenuation;
+        cur_ray = scattered;
+      } else {
+        return Vec3(0.0f, 0.0f, 0.0f);
+      }
 
     } else {
       Vec3 unit_direction = unit_vector(cur_ray.direction());
@@ -39,7 +44,7 @@ __device__ Vec3 color_7(const Ray &r, Hitable **hitable_objects,
   return Vec3(0.0f, 0.0f, 0.0f);
 }
 
-__global__ void chapter_7_kernel(TextureGPU *tex, Camera camera,
+__global__ void chapter_8_kernel(TextureGPU *tex, Camera camera,
                                  Hitable **hitable_objects,
                                  curandState *rand_state) {
   int x = threadIdx.x + blockIdx.x * blockDim.x;
@@ -62,7 +67,7 @@ __global__ void chapter_7_kernel(TextureGPU *tex, Camera camera,
 
     Ray ray = camera.get_ray(u, v);
 
-    col += color_7(ray, hitable_objects, local_rand_state);
+    col += color_8(ray, hitable_objects, local_rand_state);
   }
 
   rand_state[pixel_index] = *local_rand_state;

@@ -10,6 +10,8 @@
 #include "hitable/hitable_list.cuh"
 #include "hitable/sphere.cuh"
 #include "kernels/kernels.cuh"
+#include "material/lambertian.cuh"
+#include "material/metal.cuh"
 #include "math/camera.cuh"
 #include "math/ray.cuh"
 #include "math/vec3.cuh"
@@ -36,11 +38,22 @@ __global__ void create_world(HitableList **hitable_objects) {
   if ((x == 0) && (y == 0)) {
     float R = cos(M_PI / 4);
     *hitable_objects = new HitableList();
-    (*hitable_objects)->push_back(new Sphere(Vec3(0, 0, -1), 0.5f));
-    (*hitable_objects)->push_back(new Sphere(Vec3(0, -100.5f, -1), 100));
-    (*hitable_objects)->push_back(new Sphere(Vec3(1, 0, -1), 0.5f));
-    (*hitable_objects)->push_back(new Sphere(Vec3(-1, 0, -1), 0.5f));
-    (*hitable_objects)->push_back(new Sphere(Vec3(-1, 0, -1), -0.45f));
+
+    (*hitable_objects)
+        ->push_back(new Sphere(Vec3(0, 0, -1), 0.5f,
+                               new Lambertian(Vec3(0.8f, 0.3f, 0.3f))));
+
+    (*hitable_objects)
+        ->push_back(new Sphere(Vec3(0, -100.5f, -1), 100,
+                               new Lambertian(Vec3(0.8f, 0.8f, 0.0f))));
+
+    (*hitable_objects)
+        ->push_back(new Sphere(Vec3(1, 0, -1), 0.5f,
+                               new Metal(Vec3(0.8f, 0.6f, 0.2f), 1.0f)));
+
+    (*hitable_objects)
+        ->push_back(new Sphere(Vec3(-1, 0, -1), 0.5f,
+                               new Metal(Vec3(0.8f, 0.8f, 0.8f), 0.3f)));
   }
 }
 
@@ -127,14 +140,10 @@ int main() {
     cudaCheckErr(cudaDeviceSynchronize());
     cudaCheckErr(cudaGetLastError());
 
-    /* push_back<Sphere><<<1, 1>>>(hitable_objects, Vec3(-1, 0, -1), 0.5f); */
-    /* cudaCheckErr(cudaDeviceSynchronize()); */
-    /* cudaCheckErr(cudaGetLastError()); */
-
     std::thread input_thread(input_thread_task, std::ref(window),
                              std::ref(gCamera));
 
-    gCamera.set_ns(20);
+    gCamera.set_ns(10);
 
     int frames = 0;
     float time = 0.0f;
@@ -145,7 +154,7 @@ int main() {
 
       window.clear_render();
 
-      launch_2D_texture_kernel(chapter_7_kernel, gConfig, viewport.get(),
+      launch_2D_texture_kernel(chapter_8_kernel, gConfig, viewport.get(),
                                gCamera, (Hitable **)hitable_objects,
                                d_rand_state);
 
