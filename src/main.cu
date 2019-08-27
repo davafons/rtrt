@@ -32,30 +32,52 @@ void launch_2D_texture_kernel(void (*kernel)(TextureGPU *, Args...),
   tex->copy_to_cpu();
 }
 
-__global__ void create_world(HitableList **hitable_objects) {
-  int x = threadIdx.x + blockIdx.x * blockDim.x;
-  int y = threadIdx.y + blockIdx.y * blockDim.y;
+#define RND (curand_uniform(rand_state))
 
-  if ((x == 0) && (y == 0)) {
-    float R = cos(M_PI / 4);
+__global__ void create_world(HitableList **hitable_objects,
+                             curandState *rand_state) {
+
+  if ((threadIdx.x == 0) && (blockIdx.x == 0)) {
+
     *hitable_objects = new HitableList();
 
     (*hitable_objects)
-        ->push_back(new Sphere(Vec3(0, 0, -1), 0.5f,
-                               new Lambertian(Vec3(0.8f, 0.3f, 0.3f))));
+        ->push_back(new Sphere(Vec3(0, -1000, -1), 1000,
+                               new Lambertian(Vec3(0.5f, 0.5f, 0.5f))));
+
+    for (int a = -11; a < 11; ++a) {
+      for (int b = -11; b < 11; ++b) {
+        float choose_mat = RND;
+
+        Vec3 center(a + RND, 0.2f, b + RND);
+
+        if (choose_mat < 0.8f) {
+          (*hitable_objects)
+              ->push_back(new Sphere(
+                  center, 0.2f,
+                  new Lambertian(Vec3(RND * RND, RND * RND, RND * RND))));
+        } else if (choose_mat < 0.95f) {
+          (*hitable_objects)
+              ->push_back(new Sphere(
+                  center, 0.2f,
+                  new Metal(Vec3(0.5f * (1.0f + RND), 0.5f * (1.0f + RND),
+                                 0.5f * (1.0f + RND)),
+                            0.5f * RND)));
+        } else {
+          (*hitable_objects)
+              ->push_back(new Sphere(center, 0.2f, new Dielectric(1.5f)));
+        }
+      }
+    }
 
     (*hitable_objects)
-        ->push_back(new Sphere(Vec3(0, -100.5f, -1), 100,
-                               new Lambertian(Vec3(0.8f, 0.8f, 0.0f))));
-
+        ->push_back(new Sphere(Vec3(0, 1, 0), 1.0f, new Dielectric(1.5f)));
     (*hitable_objects)
-        ->push_back(new Sphere(Vec3(1, 0, -1), 0.5f,
-                               new Metal(Vec3(0.8f, 0.6f, 0.2f), 1.0f)));
-
+        ->push_back(new Sphere(Vec3(-4, 1, 0), 1.0f,
+                               new Lambertian(Vec3(0.4f, 0.2f, 0.1f))));
     (*hitable_objects)
-        ->push_back(new Sphere(Vec3(-1, 0, -1), 0.5f, new Dielectric(1.5f)));
-    (*hitable_objects)
-        ->push_back(new Sphere(Vec3(-1, 0, -1), -0.45f, new Dielectric(1.5f)));
+        ->push_back(new Sphere(Vec3(4, 1, 0), 1.0f,
+                               new Metal(Vec3(0.7f, 0.6f, 0.5f), 0.0f)));
   }
 }
 
@@ -118,25 +140,19 @@ int main() {
   Config gConfig;
 
   {
-    Vec3 lookfrom(3, 3, 2);
-    Vec3 lookat(0, 0, -1);
-
-    float aperture = 2.0f;
-
     Window window("Raytracer", 800, 400);
-    Camera gCamera(lookfrom, lookat, Vec3(0, 1, 0), 20,
+
+    Vec3 lookfrom(13, 2, 3);
+    Vec3 lookat(0, 0, 0);
+    float aperture = 0.1f;
+
+    Camera gCamera(lookfrom, lookat, Vec3(0, 1, 0), 30,
                    window.get_aspect_ratio(), aperture);
 
     managed_ptr<TextureGPU> viewport = make_managed<TextureGPU>(
         window.get_renderer(), window.get_width(), window.get_height(), 0.75f);
 
-    HitableList **hitable_objects =
-        cuda_malloc<HitableList *>(sizeof(HitableList *));
-    create_world<<<1, 1>>>(hitable_objects);
-
-    cudaCheckErr(cudaDeviceSynchronize());
-    cudaCheckErr(cudaGetLastError());
-
+    // Init curand
     curandState *d_rand_state = cuda_malloc<curandState>(
         viewport->get_n_pixels() * sizeof(curandState));
     dim3 blocks = gConfig.blocks(viewport->get_width(), viewport->get_height());
@@ -147,10 +163,18 @@ int main() {
     cudaCheckErr(cudaDeviceSynchronize());
     cudaCheckErr(cudaGetLastError());
 
+    // Create world
+    HitableList **hitable_objects =
+        cuda_malloc<HitableList *>(sizeof(HitableList *));
+    create_world<<<1, 1>>>(hitable_objects, d_rand_state);
+
+    cudaCheckErr(cudaDeviceSynchronize());
+    cudaCheckErr(cudaGetLastError());
+
     std::thread input_thread(input_thread_task, std::ref(window),
                              std::ref(gCamera));
 
-    gCamera.set_ns(10);
+    gCamera.set_ns(20);
 
     int frames = 0;
     float time = 0.0f;
