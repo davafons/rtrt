@@ -10,6 +10,7 @@
 #include "hitable/hitable_list.cuh"
 #include "hitable/sphere.cuh"
 #include "kernels/kernels.cuh"
+#include "material/dielectric.cuh"
 #include "material/lambertian.cuh"
 #include "material/metal.cuh"
 #include "math/camera.cuh"
@@ -52,8 +53,9 @@ __global__ void create_world(HitableList **hitable_objects) {
                                new Metal(Vec3(0.8f, 0.6f, 0.2f), 1.0f)));
 
     (*hitable_objects)
-        ->push_back(new Sphere(Vec3(-1, 0, -1), 0.5f,
-                               new Metal(Vec3(0.8f, 0.8f, 0.8f), 0.3f)));
+        ->push_back(new Sphere(Vec3(-1, 0, -1), 0.5f, new Dielectric(1.5f)));
+    (*hitable_objects)
+        ->push_back(new Sphere(Vec3(-1, 0, -1), -0.45f, new Dielectric(1.5f)));
   }
 }
 

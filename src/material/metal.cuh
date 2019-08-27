@@ -14,9 +14,9 @@ public:
     }
   }
 
-  __device__ virtual bool scatter(const Ray &r_in, const HitRecord &rec,
-                                  Vec3 &attenuation, Ray &scattered,
-                                  curandState *local_rand_state) override {
+  __device__ virtual bool
+  scatter(const Ray &r_in, const HitRecord &rec, Vec3 &attenuation,
+          Ray &scattered, curandState *local_rand_state) const override {
 
     Vec3 reflected = Math::reflect(unit_vector(r_in.direction()), rec.normal);
 
@@ -25,7 +25,7 @@ public:
             reflected + fuzz_ * Math::random_in_unit_sphere(local_rand_state));
     attenuation = albedo_;
 
-    return dot(scattered.direction(), rec.normal) > 0;
+    return dot(scattered.direction(), rec.normal) > 0.0f;
   }
 
 private:

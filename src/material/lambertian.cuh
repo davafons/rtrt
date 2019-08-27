@@ -7,9 +7,9 @@ class Lambertian : public Material {
 public:
   __device__ Lambertian(const Vec3 &albedo) : albedo_(albedo) {}
 
-  __device__ virtual bool scatter(const Ray &r_in, const HitRecord &rec,
-                                  Vec3 &attenuation, Ray &scattered,
-                                  curandState *local_rand_state) override {
+  __device__ virtual bool
+  scatter(const Ray &r_in, const HitRecord &rec, Vec3 &attenuation,
+          Ray &scattered, curandState *local_rand_state) const override {
 
     Vec3 target =
         rec.p + rec.normal + Math::random_in_unit_sphere(local_rand_state);

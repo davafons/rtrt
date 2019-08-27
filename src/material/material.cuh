@@ -9,5 +9,5 @@ class Material {
 public:
   __device__ virtual bool scatter(const Ray &r_in, const HitRecord &rec,
                                   Vec3 &attenuation, Ray &scattered,
-                                  curandState *local_rand_state) = 0;
+                                  curandState *local_rand_state) const = 0;
 };
