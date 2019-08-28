@@ -45,8 +45,8 @@ __global__ void create_world(HitableList **hitable_objects,
         ->push_back(new Sphere(Vec3(0, -1000, -1), 1000,
                                new Lambertian(Vec3(0.5f, 0.5f, 0.5f))));
 
-    for (int a = -11; a < 11; ++a) {
-      for (int b = -11; b < 11; ++b) {
+    for (int a = -4; a < 4; a += 2) {
+      for (int b = -4; b < 4; b += 2) {
         float choose_mat = RND;
 
         Vec3 center(a + RND, 0.2f, b + RND);
@@ -185,9 +185,8 @@ int main() {
 
       window.clear_render();
 
-      launch_2D_texture_kernel(chapter_11_kernel, gConfig, viewport.get(),
-                               gCamera, (Hitable **)hitable_objects,
-                               d_rand_state);
+      launch_2D_texture_kernel(raytracing, gConfig, viewport.get(), gCamera,
+                               (Hitable **)hitable_objects, d_rand_state);
 
       viewport->copy_to_renderer(window.get_renderer());
 

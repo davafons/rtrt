@@ -18,7 +18,7 @@ __device__ Vec3 random_in_unit_sphere(curandState *local_rand_state) {
   return p;
 }
 
-__device__ Vec3 random_in_unit_disk(curandState * local_rand_state) {
+__device__ Vec3 random_in_unit_disk(curandState *local_rand_state) {
   Vec3 p;
   do {
     p = 2.0f * Vec3(curand_uniform(local_rand_state),
